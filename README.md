@@ -94,6 +94,12 @@ This repository constitutes **Phase 1: The Cognitive Architecture**. It defines 
 - Integration of the automated evaluation suite (`src/eval/`) for programmatic schema, confidence calibration, evidence integrity, and hallucination testing.
 - Hard guardrail implementations (e.g., throwing programmatic errors if `HIGH` confidence claims lack 2+ independent sources in the `scratchpad`).
 
+> [!TIP]
+> **Pro Tip for Claude Code Users:**
+> This repository uses a conceptual structure (`SOUL.md` and `src/skills/`). To evolve this into an active agent using [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview), it is recommended to reorganize per Anthropic's [Memory and Metadata](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/memory-and-metadata) guidelines:
+> - Rename/Merge `SOUL.md` → `CLAUDE.md` in the project root.
+> - Relocate `src/skills/` → `.claude/skills/` to leverage [Claude Skills](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/enhancing-claude-code/skills) for automated capability discovery.
+
 ---
 
 *The standard: a senior partner at a top PE firm reading this output should find nothing they need to verify before using it to inform a preliminary investment decision. Not "good for an AI" Good, full stop.*
