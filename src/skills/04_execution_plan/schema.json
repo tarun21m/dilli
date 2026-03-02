@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["company", "skill", "date", "summary", "findings", "waves", "sources"],
+  "properties": {
+    "company": { "type": "string" },
+    "skill": { "const": "04_execution_plan" },
+    "date": { "type": "string" },
+    "summary": { "type": "string" },
+    "findings": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "early_wins": { "type": "array", "items": { "type": "string" } },
+    "waves": { "type": "array", "minItems": 1 },
+    "investment_phasing": { "type": "string" },
+    "sources": { "type": "array", "minItems": 1 }
+  },
+  "additionalProperties": true
+}

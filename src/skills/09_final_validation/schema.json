@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["company", "skill", "date", "summary", "findings", "consistency_checks", "confidence_drift_checks", "llm_judge_scores", "final_flags", "recommendation", "sources"],
+  "properties": {
+    "company": { "type": "string" },
+    "skill": { "const": "09_final_validation" },
+    "date": { "type": "string" },
+    "summary": { "type": "string", "minLength": 50 },
+    "findings": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 10 },
+      "minItems": 1
+    },
+    "consistency_checks": {
+      "type": "array",
+      "description": "Each cross-block relationship checked explicitly — not summarized. See SKILL.md for the 11 required relationships.",
+      "items": {
+        "type": "object",
+        "required": ["relationship", "skill_a", "claim_a", "skill_b", "claim_b", "status"],
+        "properties": {
+          "relationship": { "type": "string", "description": "e.g. 'SKILL 02 × SKILL 05 opportunity magnitude'" },
+          "skill_a": { "type": "string" },
+          "claim_a": { "type": "string", "minLength": 10 },
+          "skill_b": { "type": "string" },
+          "claim_b": { "type": "string", "minLength": 10 },
+          "status": { "type": "string", "enum": ["CONSISTENT", "INCONSISTENT", "BORDERLINE"] },
+          "resolution": { "type": "string", "description": "Required if status is INCONSISTENT or BORDERLINE" }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 5
+    },
+    "confidence_drift_checks": {
+      "type": "array",
+      "description": "Confidence in downstream skills cannot exceed confidence in upstream data. Check each major dependency.",
+      "items": {
+        "type": "object",
+        "required": ["upstream_skill", "upstream_metric", "upstream_confidence", "downstream_skill", "downstream_confidence", "drift_present"],
+        "properties": {
+          "upstream_skill": { "type": "string" },
+          "upstream_metric": { "type": "string" },
+          "upstream_confidence": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW", "VERY_LOW"] },
+          "downstream_skill": { "type": "string" },
+          "downstream_confidence": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW", "VERY_LOW"] },
+          "drift_present": { "type": "boolean" },
+          "resolution": { "type": "string", "description": "Required if drift_present is true" }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 3
+    },
+    "llm_judge_scores": {
+      "type": "object",
+      "description": "Score each skill 1-5 on three dimensions. Explain any score below 4.",
+      "required": ["by_skill"],
+      "properties": {
+        "by_skill": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["skill", "specificity", "evidence", "consistency"],
+            "properties": {
+              "skill": { "type": "string" },
+              "specificity": { "type": "number", "minimum": 1, "maximum": 5 },
+              "evidence": { "type": "number", "minimum": 1, "maximum": 5 },
+              "consistency": { "type": "number", "minimum": 1, "maximum": 5 },
+              "notes": { "type": "string", "description": "Required for any score below 4" }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 8
+        },
+        "aggregate": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "final_flags": {
+      "type": "array",
+      "description": "Every item requiring human attention before acting on this analysis.",
+      "items": {
+        "type": "object",
+        "required": ["flag_id", "type", "description", "why_it_matters"],
+        "properties": {
+          "flag_id": { "type": "string", "description": "e.g. 'FLAG 1'" },
+          "type": { "type": "string", "enum": ["LOW_CONFIDENCE_CLAIM", "UNRESOLVED_CONTRADICTION", "HIGH_IMPACT_GAP", "CONFIDENCE_DRIFT"] },
+          "description": { "type": "string", "minLength": 20 },
+          "why_it_matters": { "type": "string", "minLength": 20 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "recommendation": {
+      "type": "string",
+      "enum": ["GO", "CONDITIONAL_GO", "NO_GO"],
+      "description": "GO = all sections pass, no unresolved HIGH-impact inconsistencies. CONDITIONAL_GO = warnings present but not thesis-breaking. NO_GO = hard failures present."
+    },
+    "recommendation_rationale": {
+      "type": "string",
+      "minLength": 50,
+      "description": "Actionable rationale. For CONDITIONAL_GO: list specific numbered conditions. For NO_GO: state what would change the recommendation."
+    },
+    "recommendation_conditions": {
+      "type": "array",
+      "description": "Required for CONDITIONAL_GO. Specific, numbered conditions that must be resolved before final investment decision.",
+      "items": {
+        "type": "object",
+        "required": ["condition_id", "description", "why_thesis_breaking"],
+        "properties": {
+          "condition_id": { "type": "string" },
+          "description": { "type": "string", "minLength": 20 },
+          "why_thesis_breaking": { "type": "string", "minLength": 20 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "url", "date"],
+        "properties": {
+          "title": { "type": "string" },
+          "url": { "type": "string" },
+          "date": { "type": "string", "minLength": 4 }
+        }
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": false
+}

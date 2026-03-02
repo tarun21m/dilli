@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["company", "skill", "date", "summary", "findings", "financial_bridge", "assumptions", "triangulation", "sources"],
+  "properties": {
+    "company": { "type": "string" },
+    "skill": { "const": "05_financial_bridge" },
+    "date": { "type": "string" },
+    "summary": { "type": "string", "minLength": 50 },
+    "findings": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 10 },
+      "minItems": 1
+    },
+    "financial_bridge": {
+      "type": "object",
+      "required": ["do_nothing_state", "levers", "total_ebitda_uplift", "confidence"],
+      "properties": {
+        "do_nothing_state": {
+          "type": "object",
+          "required": ["year_1_ebitda", "year_5_ebitda", "trajectory", "confidence"],
+          "properties": {
+            "year_1_ebitda": { "type": "string", "description": "Range + derivation, e.g. '$42M-$72M'" },
+            "year_5_ebitda": { "type": "string", "description": "Do-nothing terminal EBITDA with derivation" },
+            "trajectory": { "type": "string", "description": "Narrative: flat/declining/growing at X% with rationale" },
+            "confidence": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW", "VERY_LOW"] }
+          },
+          "additionalProperties": false
+        },
+        "levers": {
+          "type": "array",
+          "description": "One entry per transformation lever from SKILL 03. Must match SKILL 03 initiative list.",
+          "items": {
+            "type": "object",
+            "required": ["id", "name", "ebitda_range_low", "ebitda_range_high", "confidence", "traces_to"],
+            "properties": {
+              "id": { "type": "string", "description": "e.g. 'L1', 'L2'" },
+              "name": { "type": "string" },
+              "ebitda_range_low": { "type": "number", "description": "$ millions" },
+              "ebitda_range_high": { "type": "number", "description": "$ millions" },
+              "year_of_impact": { "type": "string", "description": "e.g. 'Y2-Y4'" },
+              "confidence": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW", "VERY_LOW"] },
+              "traces_to": { "type": "string", "description": "e.g. 'SKILL 03 L1 automation lever'" }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "total_ebitda_uplift": {
+          "type": "object",
+          "required": ["range_low", "range_high", "confidence"],
+          "properties": {
+            "range_low": { "type": "number" },
+            "range_high": { "type": "number" },
+            "confidence": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW", "VERY_LOW"] }
+          },
+          "additionalProperties": false
+        },
+        "investment_required": {
+          "type": "object",
+          "properties": {
+            "range_low": { "type": "number" },
+            "range_high": { "type": "number" },
+            "confidence": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW", "VERY_LOW"] }
+          }
+        },
+        "entry_ev": { "type": "string" },
+        "exit_ev": { "type": "string" },
+        "irr_range": { "type": "string" },
+        "confidence": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW", "VERY_LOW"] }
+      },
+      "additionalProperties": false
+    },
+    "assumptions": {
+      "type": "array",
+      "description": "Key assumptions underlying the bridge. Each must show base case vs. stressed value.",
+      "items": {
+        "type": "object",
+        "required": ["assumption", "base_case", "stressed", "confidence", "source"],
+        "properties": {
+          "assumption": { "type": "string", "minLength": 5 },
+          "base_case": { "type": "string" },
+          "stressed": { "type": "string", "description": "Stressed/floor value used in SKILL 08 floor case" },
+          "confidence": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW", "VERY_LOW"] },
+          "source": { "type": "string" }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 3
+    },
+    "triangulation": {
+      "type": "array",
+      "description": "2-3 independent triangulation methods for the EBITDA baseline. Convergence within 15% = HIGH, 30% = MEDIUM, wider = LOW.",
+      "items": {
+        "type": "object",
+        "required": ["method", "result", "source"],
+        "properties": {
+          "method": { "type": "string", "description": "e.g. 'Sector benchmark', 'Revenue/employee proxy', 'Sponsor signal'" },
+          "result": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW", "VERY_LOW"] },
+          "source": { "type": "string" }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 2
+    },
+    "gaps": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "url", "date"],
+        "properties": {
+          "title": { "type": "string" },
+          "url": { "type": "string" },
+          "date": { "type": "string", "minLength": 4 }
+        }
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["company", "skill", "date", "summary", "findings", "opportunity_surface", "why_now", "inversion_check", "sources"],
+  "properties": {
+    "company": { "type": "string" },
+    "skill": { "const": "02_structural_opportunity" },
+    "date": { "type": "string" },
+    "summary": { "type": "string", "minLength": 50 },
+    "findings": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 10 },
+      "minItems": 1
+    },
+    "opportunity_surface": {
+      "type": "array",
+      "description": "One entry per opportunity type (TYPE 1-5). All five types must be evaluated — silence on any type is a validation failure.",
+      "items": {
+        "type": "object",
+        "required": ["type", "magnitude", "confidence", "rationale"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["TYPE_1_COST_COMPRESSION", "TYPE_2_DATA_MONETIZATION", "TYPE_3_REVENUE_EXPANSION", "TYPE_4_QUALITY_IMPROVEMENT", "TYPE_5_COMPETITIVE_MOAT"]
+          },
+          "magnitude": { "type": "string", "minLength": 10, "description": "Dollar range with derivation, e.g. '$30M-$64M EBITDA at MEDIUM confidence'" },
+          "confidence": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW", "VERY_LOW", "NOT_APPLICABLE"] },
+          "rationale": { "type": "string", "minLength": 20 }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 5,
+      "maxItems": 5
+    },
+    "why_now": {
+      "type": "array",
+      "description": "Timing catalysts that make this opportunity actionable now vs. 3 years ago. Must be specific — regulatory, competitive, technology, or market shifts.",
+      "items": { "type": "string", "minLength": 20 },
+      "minItems": 2
+    },
+    "ai_unlock": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "inversion_check": {
+      "type": "string",
+      "minLength": 30,
+      "description": "Adversarial check: what would have to be true for the #1 opportunity to not be real?"
+    },
+    "gaps": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "url", "date"],
+        "properties": {
+          "title": { "type": "string" },
+          "url": { "type": "string" },
+          "date": { "type": "string", "minLength": 4 }
+        }
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": false
+}

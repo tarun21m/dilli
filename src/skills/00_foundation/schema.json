@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["company", "skill", "date", "summary", "findings", "industry", "sub_industry", "sources"],
+  "properties": {
+    "company": { "type": "string" },
+    "skill": { "const": "00_foundation" },
+    "date": { "type": "string" },
+    "summary": { "type": "string" },
+    "findings": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "industry": { "type": "string" },
+    "sub_industry": { "type": "string" },
+    "comparable_companies": { "type": "array", "items": { "type": "string" } },
+    "ai_transformation_cases": { "type": "array" },
+    "gaps": { "type": "array", "items": { "type": "string" } },
+    "sources": { "type": "array", "minItems": 1 }
+  },
+  "additionalProperties": true
+}

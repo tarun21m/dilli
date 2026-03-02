@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["company", "skill", "date", "summary", "findings", "build_vs_buy", "sources"],
+  "properties": {
+    "company": { "type": "string" },
+    "skill": { "const": "06_tech_strategy" },
+    "date": { "type": "string" },
+    "summary": { "type": "string" },
+    "findings": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "build_vs_buy": { "type": "array", "minItems": 1 },
+    "ai_stack": { "type": "object" },
+    "key_tech_risks": { "type": "array" },
+    "sources": { "type": "array", "minItems": 1 }
+  },
+  "additionalProperties": true
+}

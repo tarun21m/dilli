@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["company", "skill", "date", "summary", "findings", "risk_register", "compounding_scenario", "floor_case", "most_likely_failure_mode", "sources"],
+  "properties": {
+    "company": { "type": "string" },
+    "skill": { "const": "08_risk_management" },
+    "date": { "type": "string" },
+    "summary": { "type": "string", "minLength": 50 },
+    "findings": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 10 },
+      "minItems": 1
+    },
+    "risk_register": {
+      "type": "array",
+      "description": "Minimum 5 risks, each specific to this company — not generic. Every risk must trace to a prior skill finding.",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "description", "traces_to", "likelihood", "impact", "mitigation"],
+        "properties": {
+          "id": { "type": "string", "description": "e.g. 'R1', 'R2'" },
+          "name": { "type": "string", "minLength": 5, "description": "Specific risk name — not 'execution risk'" },
+          "description": { "type": "string", "minLength": 30, "description": "Specific description grounded in company context" },
+          "traces_to": { "type": "string", "minLength": 10, "description": "e.g. 'SKILL 04 finding: data pipeline is critical Wave 1 dependency'" },
+          "likelihood": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW"] },
+          "likelihood_rationale": { "type": "string" },
+          "impact": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW"] },
+          "impact_quantified": { "type": "string", "description": "Dollar impact if this materializes, e.g. '$15-25M NPV'" },
+          "mitigation": { "type": "string", "minLength": 20, "description": "Specific and actionable — not 'monitor closely'" }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 5
+    },
+    "compounding_scenario": {
+      "type": "object",
+      "description": "Causal chain of 3+ risks triggering each other. 'Because' logic is mandatory at each step.",
+      "required": ["chain", "outcome", "timeline_to_irreversibility", "correction_window"],
+      "properties": {
+        "chain": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["risk_id", "trigger", "because", "consequence"],
+            "properties": {
+              "risk_id": { "type": "string" },
+              "trigger": { "type": "string" },
+              "because": { "type": "string", "minLength": 10, "description": "The specific causal logic — why this risk triggers the next" },
+              "consequence": { "type": "string" }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 3
+        },
+        "outcome": { "type": "string", "minLength": 30, "description": "Thesis failure statement with financial specificity" },
+        "timeline_to_irreversibility": { "type": "string", "description": "At what point has the investment thesis definitively failed?" },
+        "correction_window": { "type": "string", "description": "How long does the investor have to intervene before irreversibility?" }
+      },
+      "additionalProperties": false
+    },
+    "floor_case": {
+      "type": "object",
+      "description": "Bear case must be a financial number, not a narrative. Built from stressed SKILL 05 bridge assumptions.",
+      "required": ["bear_assumptions", "floor_y5_ebitda", "floor_exit_multiple", "floor_ev", "entry_ev_range", "investable_at_floor"],
+      "properties": {
+        "bear_assumptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["assumption", "stressed_value", "base_case_value", "reason"],
+            "properties": {
+              "assumption": { "type": "string" },
+              "stressed_value": { "type": "string" },
+              "base_case_value": { "type": "string" },
+              "reason": { "type": "string" }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 3
+        },
+        "floor_y5_ebitda": { "type": "number", "description": "$ millions — with derivation in derivation field" },
+        "floor_y5_ebitda_derivation": { "type": "string", "description": "e.g. '$48M do-nothing + $22M stressed lever - $11M investment = $59M'" },
+        "floor_exit_multiple": { "type": "number", "description": "x multiple — benchmarked against underperforming comparable" },
+        "floor_exit_multiple_rationale": { "type": "string" },
+        "floor_ev": { "type": "number", "description": "$ millions" },
+        "entry_ev_range": { "type": "string", "description": "From SKILL 05 entry EV estimate" },
+        "investable_at_floor": { "type": "string", "enum": ["YES", "NO", "MARGINALLY"], "description": "YES if floor EV > entry / NO if floor EV < entry / MARGINALLY if within 10%" },
+        "max_entry_price": { "type": "string", "description": "At what entry price is the floor case investable?" }
+      },
+      "additionalProperties": false
+    },
+    "most_likely_failure_mode": {
+      "type": "string",
+      "minLength": 30,
+      "description": "Single sentence. The most probable way this thesis underperforms rather than fails. Specific to what this analysis found."
+    },
+    "ic_questions": {
+      "type": "array",
+      "description": "Three IC partner questions answered before risk register was written.",
+      "items": {
+        "type": "object",
+        "required": ["question", "honest_answer"],
+        "properties": {
+          "question": { "type": "string" },
+          "honest_answer": { "type": "string", "minLength": 20 }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "gaps": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "url", "date"],
+        "properties": {
+          "title": { "type": "string" },
+          "url": { "type": "string" },
+          "date": { "type": "string", "minLength": 4 }
+        }
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": false
+}

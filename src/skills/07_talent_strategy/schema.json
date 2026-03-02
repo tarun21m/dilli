@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["company", "skill", "date", "summary", "findings", "new_roles_required", "sources"],
+  "properties": {
+    "company": { "type": "string" },
+    "skill": { "const": "07_talent_strategy" },
+    "date": { "type": "string" },
+    "summary": { "type": "string" },
+    "findings": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "new_roles_required": { "type": "array", "minItems": 1 },
+    "workforce_evolution": { "type": "object" },
+    "key_talent_risks": { "type": "array" },
+    "sources": { "type": "array", "minItems": 1 }
+  },
+  "additionalProperties": true
+}
